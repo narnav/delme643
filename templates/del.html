@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}About{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <h1>Movies </h1>
+  <p class="important">
+    Delete Item
+
+    <h1>Delete Item</h1>
+
+    <!-- Table to display all items -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Year</th>
+                <th>Score</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item[3] }}</td> <!-- Assuming ID is in the first column -->
+                <td>{{ item[2] }}</td> <!-- Assuming Title is in the second column -->
+                <td>{{ item[1] }}</td> <!-- Assuming Year is in the third column -->
+                <td>{{ item[0] }}</td> <!-- Assuming Score is in the fourth column -->
+                <td>
+                    <form action="{{ url_for('del_data') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ item[0] }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

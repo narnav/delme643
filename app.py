@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 import sqlite3
 
 con = sqlite3.connect("tutorial.db", check_same_thread=False)
@@ -10,7 +10,34 @@ cur.execute("CREATE TABLE if not exists movie(title, year, score)")
 def get_main():
     return render_template('main.html')
 
-# TODO - add db connetion
+@api.route('/del', methods=['GET', 'POST'])
+def del_data():
+    if request.method == 'POST':
+        # Extract the id of the item to be deleted from the form
+        item_id = request.form['id']
+        
+        # Connect to your database (example with SQLite)
+        con = sqlite3.connect('tutorial.db')
+        cur = con.cursor()
+        
+        # Delete the item from the database
+        cur.execute("DELETE FROM movie WHERE rowid = ?", (item_id,))
+        con.commit()
+        
+        # Close the connection
+        con.close()
+        
+        # Redirect to a different page or return a success message
+        return redirect(url_for('show_data'))
+    
+    # For GET request, fetch all data to display
+    con = sqlite3.connect('tutorial.db')
+    cur = con.cursor()
+    cur.execute("SELECT rowid,* FROM movie")
+    data = cur.fetchall()
+    con.close()
+    
+    return render_template('del.html', data=data)
 
 @api.route('/add', methods=['GET', 'POST'])
 def add_data():
